@@ -1,0 +1,2 @@
+-e git+https://github.com/GET-Prog/flappy.git@1.0#egg=Flappy
+pygame==2.0.2
