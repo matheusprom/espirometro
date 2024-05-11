@@ -1,5 +1,4 @@
 if __name__ == "__main__":
-    from flappy.runner import Runner
+    from flappy.main_menu import game
 
-    runner = Runner()
-    runner.run()
+    game()

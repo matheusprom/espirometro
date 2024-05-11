@@ -19,10 +19,11 @@ After the virtual environment is activated, install the dependencies:
 
 ```
 $ pip install -r requirements.txt
+$ pip install .
 ```
 
 ## Running the game
 
 ```
-$ python flappy/main.py
+$ python -m flappy.main
 ```

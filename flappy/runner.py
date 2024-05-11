@@ -11,23 +11,27 @@ from flappy.constants import (
     MIN_PIPE_OFFSET,
     MAX_PIPE_OFFSET,
     SCORE_FONT_SIZE,
+    GAME_OVER_TEXT
 )
-from flappy.helpers import get_image_path, get_sound_path, create_pygame_font
+from flappy.helpers import get_image_path, create_pygame_font
 from flappy.models.ground import Ground
 from flappy.models.pipe import Pipe
 from flappy.models.bird import Bird
+from flappy.sound import GameSound
 
 
 class Runner:
     def __init__(self):
+
         pygame.init()
 
+        self.is_dead = False
+        self.running = True
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption(CAPTION)
 
         self.clock = pygame.time.Clock()
         self.background = self.create_background()
-        self.run_background_music()
 
         self.bird_group = pygame.sprite.Group()
         self.ground_group = pygame.sprite.Group()
@@ -37,6 +41,7 @@ class Runner:
         self.score = 0
 
         self.bird_group.add(Bird())
+        self.game_sound = GameSound()
 
         for i in range(2):
             self.ground_group.add(Ground(i * SCREEN_WIDTH))
@@ -47,13 +52,11 @@ class Runner:
         for p in self.create_random_pipes(SCREEN_WIDTH + DISTANCE_BETWEEN_PIPES):
             self.pipe_group.add(p)
 
-    def run_background_music(self):
-        sound_path = get_sound_path("background.wav")
-        sound = pygame.mixer.Sound(sound_path)
-        sound.play(-1)
-
     def create_score_text(self, score):
         return self.score_font.render(score, True, (255, 255, 255))
+
+    def create_game_over_text(self):
+        return self.score_font.render(GAME_OVER_TEXT, True, (255, 24, 24))
 
     @staticmethod
     def create_background():
@@ -61,10 +64,13 @@ class Runner:
         return pygame.transform.scale(bg, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
     def has_collision(self):
+        if self.is_dead:
+            return True
         for group in [self.ground_group, self.pipe_group]:
             if pygame.sprite.groupcollide(
-                self.bird_group, group, False, False, pygame.sprite.collide_mask
+                    self.bird_group, group, False, False, pygame.sprite.collide_mask
             ):
+                self.is_dead = True
                 return True
 
         return False
@@ -74,9 +80,15 @@ class Runner:
             if event.type == pygame.QUIT:
                 pygame.quit()
 
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                for bird in self.bird_group.sprites():
-                    bird.bump()
+            if self.is_dead:
+                keys = pygame.key.get_pressed()
+                if keys[pygame.K_ESCAPE] or keys[pygame.K_SPACE]:
+                    self.running = False
+
+            else:
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    for bird in self.bird_group.sprites():
+                        bird.bump()
 
     def update_ground(self):
         current_ground = self.ground_group.sprites()[0]
@@ -102,11 +114,6 @@ class Runner:
 
         return p1, p2
 
-    def play_coin_sound(self):
-        sound_path = get_sound_path("coin.wav")
-        sound = pygame.mixer.Sound(sound_path)
-        sound.play()
-
     def update_score(self):
         for bird in self.bird_group:
             for pipe in self.pipe_group:
@@ -115,7 +122,7 @@ class Runner:
                 if not pipe.scored and pipe.inverted and bird_center >= pipe_center:
                     pipe.scored = True
                     self.score += 1
-                    self.play_coin_sound()
+                    self.game_sound.play_coin_sound()
 
     def update_frame(self):
         self.screen.blit(self.background, (0, 0))
@@ -134,10 +141,28 @@ class Runner:
         )
         pygame.display.update()
 
+    def death_screen(self):
+        self.bird_group = None
+        self.ground_group = None
+        self.pipe_group = None
+        self.screen.blit(self.background, (0, 0))
+        self.screen.blit(self.create_game_over_text(),
+                         ((SCREEN_WIDTH - (SCORE_FONT_SIZE / 2)) / 3.5, SCREEN_HEIGHT / 8),)
+        self.screen.blit(
+            self.create_score_text(str(self.score)),
+            ((SCREEN_WIDTH - (SCORE_FONT_SIZE / 2)) / 2, SCREEN_HEIGHT / 4),
+        )
+        pygame.display.update()
+
     def run(self):
-        while not self.has_collision():
+
+        while self.running:
+            while not self.has_collision():
+                self.clock.tick(CLOCK_TICK)
+                self.check_events()
+                self.update_frame()
+
             self.clock.tick(CLOCK_TICK)
             self.check_events()
-            self.update_frame()
-
-        pygame.quit()
+            self.death_screen()
+            pygame.display.flip()

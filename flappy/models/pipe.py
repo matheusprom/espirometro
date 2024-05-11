@@ -1,6 +1,6 @@
 import pygame
 from flappy.helpers import get_image_path
-from constants import PIPE_WIDTH, PIPE_HEIGHT, GAME_SPEED, SCREEN_HEIGHT
+from flappy.constants import PIPE_WIDTH, PIPE_HEIGHT, GAME_SPEED, SCREEN_HEIGHT
 
 
 class Pipe(pygame.sprite.Sprite):
