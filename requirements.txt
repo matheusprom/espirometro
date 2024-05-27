@@ -1,3 +1,4 @@
 -e git+https://github.com/GET-Prog/flappy.git@1.0#egg=Flappy
 pygame==2.5.2
 pygame-menu==4.4.3
+pyserial==3.5
