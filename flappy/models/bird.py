@@ -32,7 +32,7 @@ class Bird(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         self.rect[0] = SCREEN_WIDTH / 4
-        self.rect[1] = SCREEN_HEIGHT / 2
+        self.rect[1] = 20
 
     def update(self):
         self.current_image = (self.current_image + 1) % len(self.images)
@@ -46,7 +46,7 @@ class Bird(pygame.sprite.Sprite):
             self.images[self.current_image], self.current_angle
         )
 
-        self.current_speed += GRAVITY
+        self.current_speed += GRAVITY/2
         self.rect[1] += self.current_speed
 
     def get_wing_sound(self):
@@ -54,7 +54,7 @@ class Bird(pygame.sprite.Sprite):
         return pygame.mixer.Sound(sound_path)
 
     def bump(self):
-        self.current_speed = -SPEED
+        self.current_speed = -SPEED/2
         self.current_angle = UP_ANGLE
         self.wing_sound.play()
 

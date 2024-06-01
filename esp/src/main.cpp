@@ -8,14 +8,23 @@ HX710B pressure_sensor;
 
 // MAGIC NUMBERS
 #define OFFSET  540000 // used for tare the weight
-#define RES     2.98023e-7
+#define RES     2.98023e-5
+
+uint8_t last = 0;
 
 void sendSensorData(void)
 {
   // convert the raw read to pascal using magic numbers
-  float read_pascal =  ( (pressure_sensor.read() - OFFSET) * RES) *20 - 50;
-  printf("%X\n", read_pascal);
-  delay(0);
+  float read_pascal =  ( (pressure_sensor.read() - OFFSET) * RES) *(-2);
+  if(read_pascal <1 && last > 0){
+    last = 0;
+    //printf("%f\n", read_pascal);
+  }else if(read_pascal > last && read_pascal > 1/*&& last<1*/){
+    last = read_pascal;
+    printf("%x\n", 1);
+  }
+  //printf("%x\n", last);
+  delayMicroseconds(500);
 }
 
 void setup(void)

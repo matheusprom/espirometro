@@ -45,9 +45,12 @@ class Runner:
         self.game_sound = GameSound()
 
         self.ser = serial.Serial(
-            port='/dev/ttyACM0',
+            # port='/dev/ttyACM0',
+            port='COM3',
             baudrate=115200,
-            bytesize=4
+            bytesize=serial.EIGHTBITS,
+            timeout=0
+            # bytesize=8
         )
 
         for i in range(2):
@@ -164,15 +167,24 @@ class Runner:
 
     def run(self):
 
+        # serial
         while self.running:
             while not self.has_collision():
                 self.clock.tick(CLOCK_TICK)
-                print(self.ser.read())
                 self.check_events()
+                read = self.ser.read()
+                # print("running " + str(read))
+                if read == b'1':
+                    # print("jumping ")
+                    for bird in self.bird_group.sprites():
+                        bird.bump()
+                    self.ser.read()
+                    self.ser.read()
                 self.update_frame()
 
             self.clock.tick(CLOCK_TICK)
             self.check_events()
             self.death_screen()
             pygame.display.flip()
-            print(self.ser.read())
+            # print("dead " + str(self.ser.read()))
+
