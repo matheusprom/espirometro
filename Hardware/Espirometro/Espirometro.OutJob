@@ -128,7 +128,7 @@ Configuration6_Item6=Comment=120|Manufacturer=100|Manufacturer Part Number=227|D
 [PublishSettings]
 OutputFilePath2=C:\Users\Felipe Girold\Desktop\sanspray\sanspray-acionador-smart\hardware\painel\Acionador\Project Outputs for Acionador\OutputName\Acionador.PDF
 ReleaseManaged2=1
-OutputBasePath2=Project Outputs for Free Documents
+OutputBasePath2=Project Outputs for Espirometro
 OutputPathMedia2=
 OutputPathMediaValue2==OutputName
 OutputPathOutputer2=[Output Type]
@@ -155,7 +155,7 @@ PDFACompliance2=Disabled
 PDFVersion2=Default
 OutputFilePath3=C:\Users\Felipe Girold\Desktop\sanspray\sanspray-acionador-smart\hardware\painel\Acionador\Project Outputs for Acionador\
 ReleaseManaged3=1
-OutputBasePath3=Project Outputs for Free Documents
+OutputBasePath3=Project Outputs for Espirometro
 OutputPathMedia3=
 OutputPathMediaValue3=
 OutputPathOutputer3=[Output Type]
@@ -168,7 +168,7 @@ OutputFileNameSpecial3=
 OpenOutput3=1
 OutputFilePath4=
 ReleaseManaged4=1
-OutputBasePath4=Project Outputs for Free Documents
+OutputBasePath4=Project Outputs for Espirometro
 OutputPathMedia4=
 OutputPathMediaValue4=
 OutputPathOutputer4=[Output Type]
